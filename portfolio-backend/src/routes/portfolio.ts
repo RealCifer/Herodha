@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import InMemoryCache from "../utils/cache";
 import { Portfolio } from "../models/portfolio";
 import { Stock } from "../models/stock";
+import { fetchYahooCMP } from "../services/yahoo";
 
 const router = Router();
 
@@ -38,12 +39,16 @@ router.get("/", async (_req: Request, res: Response) => {
 
   let totalInvestment = 0;
 
-  stocks.forEach((stock) => {
-    stock.investment = stock.purchasePrice * stock.quantity;
-    stock.presentValue = stock.investment;
-    stock.gainLoss = 0;
-    totalInvestment += stock.investment;
-  });
+ for (const stock of stocks) {
+  stock.investment = stock.purchasePrice * stock.quantity;
+  totalInvestment += stock.investment;
+
+  const cmp = await fetchYahooCMP(stock.symbol, stock.exchange);
+  stock.cmp = cmp ?? stock.purchasePrice;
+
+  stock.presentValue = stock.cmp * stock.quantity;
+  stock.gainLoss = stock.presentValue - stock.investment;
+};
 
   const portfolio: Portfolio = {
     stocks,
