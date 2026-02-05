@@ -3,6 +3,7 @@ import InMemoryCache from "../utils/cache";
 import { Portfolio } from "../models/portfolio";
 import { Stock } from "../models/stock";
 import { fetchYahooCMP } from "../services/yahoo";
+import { fetchGoogleMetrics } from "../services/google";
 
 const router = Router();
 
@@ -48,6 +49,14 @@ router.get("/", async (_req: Request, res: Response) => {
 
   stock.presentValue = stock.cmp * stock.quantity;
   stock.gainLoss = stock.presentValue - stock.investment;
+
+  const { peRatio, latestEarnings } = await fetchGoogleMetrics(
+    stock.symbol,
+    stock.exchange
+  );
+
+  stock.peRatio = peRatio ?? undefined;
+  stock.latestEarnings = latestEarnings ?? undefined;
 };
 
   const portfolio: Portfolio = {
