@@ -74,7 +74,12 @@ router.get("/", async (_req: Request, res: Response) => {
     sectorMap[stock.sector].totalInvestment += stock.investment;
     sectorMap[stock.sector].totalPresentValue += stock.presentValue;
   }
-
+  for (const stock of stocks) {
+    stock.portfolioPercent =
+      totalPresentValue > 0
+        ? (stock.presentValue! / totalPresentValue) * 100
+        : 0;
+  }
   const sectors = Object.entries(sectorMap).map(
     ([sector, values]) => ({
       sector,

@@ -11,6 +11,7 @@ type Stock = {
   cmp?: number;
   presentValue?: number;
   gainLoss?: number;
+  portfolioPercent?: number;
 };
 
 type Sector = {
@@ -78,7 +79,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-neutral-950 p-8 text-white">
       <div className="max-w-5xl mx-auto bg-neutral-900 rounded-xl p-6 shadow-lg">
-        {}
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">📊 Portfolio Dashboard</h1>
           {data.source && (
@@ -105,7 +106,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Stocks */}
+        {}
         <table className="w-full border border-neutral-700 mb-8">
           <thead className="bg-neutral-800 text-neutral-300">
             <tr>
@@ -114,6 +115,7 @@ export default function Home() {
               <th className="p-2 border border-neutral-700">Buy</th>
               <th className="p-2 border border-neutral-700">CMP</th>
               <th className="p-2 border border-neutral-700">Value</th>
+              <th className="p-2 border border-neutral-700">% Portfolio</th>
               <th className="p-2 border border-neutral-700">P/L</th>
             </tr>
           </thead>
@@ -138,6 +140,9 @@ export default function Home() {
                   </td>
                   <td className="p-2 border border-neutral-700">
                     ₹{Math.round(s.presentValue ?? 0)}
+                  </td>
+                  <td className="p-2 border border-neutral-700">
+                    {s.portfolioPercent?.toFixed(2)}%
                   </td>
                   <td
                     className={`p-2 border border-neutral-700 font-semibold ${
