@@ -6,12 +6,10 @@ import { fetchYahooCMP } from "../services/yahoo";
 import { fetchGoogleMetrics } from "../services/google";
 
 const router = Router();
-
-const portfolioCache = new InMemoryCache<Portfolio>(15);
+const portfolioCache = new InMemoryCache<Portfolio>(60);
 
 router.get("/", async (_req: Request, res: Response) => {
   const cachedData = portfolioCache.get();
-
   if (cachedData) {
     return res.status(200).json({
       source: "cache",
@@ -39,32 +37,59 @@ router.get("/", async (_req: Request, res: Response) => {
   ];
 
   let totalInvestment = 0;
+  let totalPresentValue = 0;
 
- for (const stock of stocks) {
-  stock.investment = stock.purchasePrice * stock.quantity;
-  totalInvestment += stock.investment;
+  const sectorMap: Record<
+    string,
+    { totalInvestment: number; totalPresentValue: number }
+  > = {};
 
-  const cmp = await fetchYahooCMP(stock.symbol, stock.exchange);
-  stock.cmp = cmp ?? stock.purchasePrice;
+  for (const stock of stocks) {
+    stock.investment = stock.purchasePrice * stock.quantity;
+    totalInvestment += stock.investment;
 
-  stock.presentValue = stock.cmp * stock.quantity;
-  stock.gainLoss = stock.presentValue - stock.investment;
+    const cmp = await fetchYahooCMP(stock.symbol, stock.exchange);
+    stock.cmp = cmp ?? stock.purchasePrice;
 
-  const { peRatio, latestEarnings } = await fetchGoogleMetrics(
-    stock.symbol,
-    stock.exchange
+    stock.presentValue = stock.cmp * stock.quantity;
+    stock.gainLoss = stock.presentValue - stock.investment;
+
+    totalPresentValue += stock.presentValue;
+
+    const { peRatio, latestEarnings } = await fetchGoogleMetrics(
+      stock.symbol,
+      stock.exchange
+    );
+
+    stock.peRatio = peRatio ?? undefined;
+    stock.latestEarnings = latestEarnings ?? undefined;
+
+    if (!sectorMap[stock.sector]) {
+      sectorMap[stock.sector] = {
+        totalInvestment: 0,
+        totalPresentValue: 0,
+      };
+    }
+
+    sectorMap[stock.sector].totalInvestment += stock.investment;
+    sectorMap[stock.sector].totalPresentValue += stock.presentValue;
+  }
+
+  const sectors = Object.entries(sectorMap).map(
+    ([sector, values]) => ({
+      sector,
+      totalInvestment: values.totalInvestment,
+      totalPresentValue: values.totalPresentValue,
+      gainLoss: values.totalPresentValue - values.totalInvestment,
+    })
   );
-
-  stock.peRatio = peRatio ?? undefined;
-  stock.latestEarnings = latestEarnings ?? undefined;
-};
 
   const portfolio: Portfolio = {
     stocks,
     totalInvestment,
-    totalPresentValue: totalInvestment,
-    totalGainLoss: 0,
-    sectors: [],
+    totalPresentValue,
+    totalGainLoss: totalPresentValue - totalInvestment,
+    sectors,
     lastUpdated: new Date().toISOString(),
   };
 
