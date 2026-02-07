@@ -106,51 +106,61 @@ No mock or hardcoded financial values are used when APIs fail.
 
 ## Project Structure
 
+```text
 root
 │
 ├── portfolio-backend
-│ ├── src
-│ │ ├── routes # API routes
-│ │ ├── services # External data fetching (Yahoo / Google)
-│ │ ├── models # TypeScript models
-│ │ ├── utils # Cache and helpers
-│ │ └── index.ts # Server entry point
-│ ├── package.json
-│ └── tsconfig.json
+│   ├── src
+│   │   ├── routes
+│   │   │   └── portfolio.ts        
+│   │   ├── services
+│   │   │   ├── yahoo.ts            
+│   │   │   └── google.ts           
+│   │   ├── models
+│   │   │   ├── stock.ts            
+│   │   │   └── portfolio.ts         
+│   │   ├── utils
+│   │   │   └── cache.ts             
+│   │   └── index.ts                
+│   ├── package.json
+│   └── tsconfig.json
 │
 ├── portfolio-frontend
-│ ├── app
-│ │ ├── page.tsx # Main dashboard UI
-│ │ └── lib # API client
-│ ├── public
-│ ├── package.json
-│ └── tailwind.config.js
+│   ├── app
+│   │   ├── page.tsx                 
+│   │   └── lib
+│   │       └── api.ts               
+│   ├── public
+│   ├── package.json
+│   └── tailwind.config.js
 │
 └── README.md
 
-
 ---
-
-## How to Run the Project Locally
+## ▶How to Run the Project Locally
 
 ### Backend
-```bash
+
 cd portfolio-backend
 npm install
 npm run dev
+
+Backend runs at:
 http://localhost:5000
 
+---
 
 ### Frontend
-``` bash
+
 cd portfolio-frontend
 npm install
 npm run dev
+
+Frontend runs at:
 http://localhost:3000
 
+---
 
-### AUTHOR
-``` bash
-ADITYA KHAMAIT
+### Author
 
-
+Aditya Khamait
