@@ -1,5 +1,4 @@
 import { Stock } from "./stock";
-
 export interface SectorSummary {
   sector: string;
   totalInvestment: number;

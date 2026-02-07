@@ -27,7 +27,7 @@ export async function fetchYahooCMP(
       return result.regularMarketPrice;
     }
   } catch (err) {
-    console.warn(`Primary Yahoo fetch failed for ${yahooSymbol}`);
+// console.warn(`Primary Yahoo fetch failed for ${yahooSymbol}`);
   }
 
   try {
