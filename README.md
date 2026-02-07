@@ -137,8 +137,9 @@ root
 └── README.md
 
 ---
-## ▶How to Run the Project Locally
+## How to Run the Project Locally
 
+``` 
 ### Backend
 
 cd portfolio-backend
