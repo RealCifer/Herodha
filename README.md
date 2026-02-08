@@ -161,6 +161,26 @@ Frontend runs at:
 http://localhost:3000
 
 ---
+## Deployed Links
+
+### Backend (Render)
+
+- Root:
+  https://herodha-371j.onrender.com/
+
+- Health Check:
+  https://herodha-371j.onrender.com/health
+
+- Portfolio API:
+  https://herodha-371j.onrender.com/portfolio
+
+---
+
+### Frontend (Vercel)
+
+- Portfolio Dashboard UI:
+  https://herodha.vercel.app
+
 
 ### Author
 
